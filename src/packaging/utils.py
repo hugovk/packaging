@@ -8,8 +8,11 @@ import functools
 import re
 from typing import NewType, Tuple, Union, cast
 
-from .tags import Tag, parse_tag
 from .version import InvalidVersion, Version, _TrimmedRelease
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from .tags import Tag
 
 BuildTag = Union[Tuple[()], Tuple[int, str]]
 NormalizedName = NewType("NormalizedName", str)
@@ -130,6 +133,9 @@ def parse_wheel_filename(
         build = cast(BuildTag, (int(build_match.group(1)), build_match.group(2)))
     else:
         build = ()
+
+    from .tags import parse_tag
+
     tags = parse_tag(parts[-1])
     return (name, version, build, tags)
 
